@@ -9,19 +9,21 @@
 
 #include "queue.h" // Circular queue for orders
 
+#include "rfid.h"
+
 #define RIGHT [value]
 #define LEFT [value]
 #define MAXDRINKID [value]
 #define MINDRINKID 0
 
-void displayMenu(int);
-char *_getDrink(int);
+// void displayMenu(int);
+// char *_getDrink(int);
 
 bool updateDrink = 0;
 volatile bool pumps = 0; // do not enable the sonar sensor interrupts
 volatile int drink = 0;  // which drink to display on the screen
 
-char menu[4][16]
+char menu[4][16];
 
     enum states {
         IDLE,
@@ -40,8 +42,23 @@ char menu[4][16]
     Todo: Everything
 */
 
+
+
 int main(void)
 {
+    // RFID reader init ----------------------
+    uint8_t status;
+    uint8_t tag_type[2];
+    uint8_t uid[5];
+
+    hardware_init();
+    rc522_init();
+
+    uart_print("RC522 ready\r\n");
+    // Ultrasonic sensor init ----------------
+    ultrasonic_init();
+    uart_print("Ultrasonic ready\r\n");
+    // Pumps init ----------------------------
     int state = IDLE;
 
     int pump1 = 0;
@@ -50,6 +67,32 @@ int main(void)
     int pump4 = 0;
     while (1)
     {
+        status = rc522_request(PICC_REQIDL, tag_type);
+        // uart_print("Requesting ID\r\n"); // for debugging
+        if (status == MI_OK) {
+            status = rc522_anticoll(uid);
+            if (status == MI_OK) {
+                uart_print("ID received: ");
+                print_uid(uid, 4);
+                uart_print("Checking queue . . .\r\n");
+                // Check queue
+                _delay_ms(500);
+            }
+        }
+
+        // // ULTRASONIC SENSOR
+        // // NOTE: Not timers nor interupt 
+        // // To-do: implement timer and interupt
+        // if (ultrasonic_object_within_2cm()) {
+        //     if (!object_present) {
+        //         uart_print("Object detected within 2 cm\r\n");
+        //     }
+        //     object_present = 1;
+        // } else {
+        //     object_present = 0;
+        // }
+
+
         displayMenu(drink);
 
         /* ADC Button LOGIC
