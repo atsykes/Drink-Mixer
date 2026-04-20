@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "orders.h"
 
 #define SIZE 8
 
-int queue[SIZE];
+Order *queue[SIZE];
 int front = -1, rear = -1;
 
 // Check if queue is full
@@ -18,14 +19,14 @@ int isEmpty()
     return front == -1;
 }
 
-int getFront(void)
+Order *getFront(void)
 {
     if (isEmpty())
         return -1; // or some error value
     return queue[front];
 }
 
-int getRear(void)
+Order *getRear(void)
 {
     if (isEmpty())
         return -1; // or some error value
@@ -74,4 +75,26 @@ int dequeue()
     }
 
     return value;
+}
+
+int findRFID(uint8_t uid)
+{
+    /* Returns the index if found, -1 otherwise */
+    if (isEmpty())
+        return -1;
+
+    int i = front;
+
+    while (1)
+    {
+        if (queue[i]->uid == uid)
+            return i; // return index where found
+
+        if (i == rear)
+            break;
+
+        i = (i + 1) % SIZE;
+    }
+
+    return -1; // not found
 }

@@ -2,13 +2,14 @@
 #include <stdbool.h>
 #include "drink.h"
 
+// Information for Each Drink
 struct Drink
 {
     char name[16];
     bool *ingredients[4];
 };
 
-char *getName(Drink *d)
+const char *getName(Drink *d)
 {
     return d->name;
 }
