@@ -4,7 +4,9 @@
 
 #define SIZE 8
 
-Order *queue[SIZE];
+Order o0, o1, o2, o3, o4, o5, o6, o7;
+
+Order *queue[SIZE] = {&o0, &o1, &o2, &o3, &o4, &o5, &o6, &o7};
 int front = -1, rear = -1;
 
 // Check if queue is full
@@ -22,47 +24,46 @@ int isEmpty()
 Order *getFront(void)
 {
     if (isEmpty())
-        return -1; // or some error value
+        return NULL; // or some error value
     return queue[front];
 }
 
 Order *getRear(void)
 {
     if (isEmpty())
-        return -1; // or some error value
+        return NULL; // or some error value
     return queue[rear];
 }
 
 // Enqueue operation
-int enqueue(int value)
+int enqueue(const uint8_t *uid, const Drink *drink)
 {
+    /**
+     * @brief Add order to the queue
+     */
     if (isFull())
-    {
         return -1;
-    }
 
     if (isEmpty())
-    {
         front = rear = 0;
-    }
     else
-    {
         rear = (rear + 1) % SIZE;
-    }
 
-    queue[rear] = value;
+    updateOrder(queue[rear], uid, drink);
+
     return 1;
 }
 
 // Dequeue operation
 int dequeue()
 {
+    /**
+     * @brief Remove order from the queue
+     */
     if (isEmpty())
     {
-        return -1;
+        return -1; // if it is already empty
     }
-
-    int value = queue[front];
 
     if (front == rear)
     {
@@ -74,21 +75,31 @@ int dequeue()
         front = (front + 1) % SIZE;
     }
 
-    return value;
+    return 1; // if it works
 }
 
-int findRFID(uint8_t uid)
+int findRFID(const uint8_t *uid)
 {
-    /* Returns the index if found, -1 otherwise */
+    /**
+     * @brief Returns the index if found, -1 otherwise
+     */
     if (isEmpty())
         return -1;
 
     int i = front;
-
     while (1)
     {
-        if (queue[i]->uid == uid)
-            return i; // return index where found
+
+        for (int j = 0; j < 5; j++)
+        {
+            if (uid[j] == queue[i]->uid[j])
+            {
+                if (j == 4)
+                    return i;
+            }
+            else
+                break;
+        }
 
         if (i == rear)
             break;

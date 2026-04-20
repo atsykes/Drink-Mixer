@@ -6,6 +6,6 @@ int isFull();
 int isEmpty();
 Order *getFront(void);
 Order *getRear(void);
-int enqueue(int);
+int enqueue(const uint8_t *, const Drink *);
 int dequeue();
-int findRFID(uint8_t)
+int findRFID(const uint8_t *)

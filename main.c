@@ -29,9 +29,9 @@
 // bool pollSensors(bool *pump_en)
 
 bool updateDrink = 0;
-volatile int drink = 0; // which drink to display on the screen
+volatile int drink = 0; // index of the drink menu (to display on screen and to be added to the orders)
 
-char menu[4][16];
+Drink *drink_menu[MAXDRINKID + 1] = {}; // List of available drinks
 
 // TODO: Issue - during the Timeout state, it is possible that a cup gets in front of another sensor
 // TODO: To combat this, we should just enforce equal spacing (or find some other SW alternative)
@@ -80,11 +80,15 @@ int main(void)
             status = rc522_anticoll(uid);
             if (status == MI_OK)
             {
-                uart_print("ID received: ");
-                print_uid(uid, 4);
-                uart_print("Checking queue . . .\r\n");
+                // uart_print("ID received: ");
+                // print_uid(uid, 4);
+                // uart_print("Checking queue . . .\r\n");
                 // Check queue
-                _delay_ms(500);
+                //_delay_ms(500);
+
+                // Queue Functionality
+                if (findRFID(uid) == -1)
+                    enqueue(uid, drink_menu[drink])
             }
         }
 

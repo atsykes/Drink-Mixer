@@ -6,10 +6,10 @@
 struct Drink
 {
     char name[16];
-    bool *ingredients[4];
+    bool ingredients[4];
 };
 
-const char *getName(Drink *d)
+const char *getName(const Drink *d)
 {
     return d->name;
 }

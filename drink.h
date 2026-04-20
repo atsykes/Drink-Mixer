@@ -9,7 +9,7 @@ typedef struct
     bool ingredients[4];
 } Drink;
 
-const char *getName(const Drink *d);
-const bool *getIngredients(const Drink *d);
+const char *getName(const Drink *);
+const bool *getIngredients(const Drink *);
 
 #endif
