@@ -2,36 +2,25 @@
 
 #include "adc.h"
 
-#define MASKBITS 0x0f
+#define ADC_MUX_BITS 0b1111
+
+#define ADC_PRSC 0b111 // Set the prescalar to divide by 128
 
 void adc_init(void)
 {
-    // Step 1
-    ADMUX &= ~(1 << REFS1);
-    ADMUX |= (1 << REFS0);
-    
-    // Step 2
-    ADCSRA |= ((1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0));
-
-    // Step 3
-    ADMUX |= (1 << ADLAR);
-
-    // Step 4
-    ADCSRA |= (1 << ADEN);
+    // Initialize the ADC
+    ADMUX |= (1 << REFS0);         // Set the REFS bits
+    ADMUX |= (1 << ADLAR);         // Left adjust the output
+    ADCSRA |= (ADC_PRSC << ADPS0); // Set the prescalar bits
+    ADCSRA |= (1 << ADEN);         // Enable the ADC
 }
 
 uint8_t adc_sample(uint8_t channel)
 {
-    // Set ADC input mux bits to 'channel' value
-    // ADMUX |= ((1 << MUX0) | (1 << MUX1));
-    // ADMUX &= ~((1 << MUX2) | (1 << MUX3));
-
-    // Convert an analog input and return the 8-bit result
-    ADMUX &= ~MASKBITS;
-    ADMUX |= (MASKBITS & channel);
-    ADCSRA |= (1 << ADSC);
-
-    while ((ADCSRA & (1 << ADSC)) != 0) {}
-    unsigned char result = ADCH;
-    return result;
+    ADMUX &= ~ADC_MUX_BITS;
+    ADMUX |= ((channel & ADC_MUX_BITS) << MUX0); // Set the MUX bits
+    ADCSRA |= (1 << ADSC);                       // Start a conversion
+    while (ADCSRA & (1 << ADSC))
+        ;        // wait for conversion complete
+    return ADCH; // Get converted value
 }
