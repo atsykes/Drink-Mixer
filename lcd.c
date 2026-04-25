@@ -96,9 +96,9 @@ void lcd_writedata(unsigned char dat)
 void lcd_writenibble(unsigned char lcdbits)
 {
   /* Send upper four bits of the byte "lcdbits" to the LCD */
-  PORTD &= ~DATA_BITS;            // Clear PD4-7;
-  PORTD |= (lcdbits & DATA_BITS); // Put high 4 bits of data in PD4-7
-  PORTB |= (1 << PB1);            // Set E to 1
-  PORTB |= (1 << PB1);            // Make sure E is >230ns
-  PORTB &= ~(1 << PB1);           // Set E to 0
+  PORTD &= ~DATA_BITS;                   // Clear PD4-7;
+  PORTD |= ((lcdbits >> 1) & DATA_BITS); // Put high 4 bits of data in PD4-7
+  PORTB |= (1 << PB1);                   // Set E to 1
+  PORTB |= (1 << PB1);                   // Make sure E is >230ns
+  PORTB &= ~(1 << PB1);                  // Set E to 0
 }
