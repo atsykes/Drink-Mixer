@@ -79,6 +79,13 @@ void lcd_writecommand(unsigned char cmd)
   _delay_ms(2);              // Delay 2ms
 }
 
+void lcd_print_hex(uint8_t val)
+{
+    char hex[] = "0123456789ABCDEF";
+    lcd_writedata(hex[val >> 4]);
+    lcd_writedata(hex[val & 0x0F]);
+}
+
 /*
   lcd_writedata - Output a byte to the LCD data register
 */
