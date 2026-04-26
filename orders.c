@@ -4,11 +4,6 @@
 #include "orders.h"
 
 // Information for Each Drink
-struct Order
-{
-    uint8_t uid[5];
-    Drink *drink;
-};
 
 const uint8_t *getID(const Order *o)
 {

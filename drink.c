@@ -3,11 +3,6 @@
 #include "drink.h"
 
 // Information for Each Drink
-struct Drink
-{
-    char name[16];
-    bool ingredients[4];
-};
 
 const char *getName(const Drink *d)
 {
