@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "orders.h"
-
-#define SIZE 8
+#include "queue.h"
 
 Order o0, o1, o2, o3, o4, o5, o6, o7;
 
@@ -108,4 +107,31 @@ int findRFID(const uint8_t *uid)
     }
 
     return -1; // not found
+}
+
+int getPosition(int index)
+{
+    /**
+     * @brief Given a queue index, returns the position in line (1-based)
+     *        Returns -1 if index is not in the queue
+     */
+    if (isEmpty())
+        return -1;
+
+    int i = front;
+    int position = 1;
+
+    while (1)
+    {
+        if (i == index)
+            return position;
+
+        if (i == rear)
+            break;
+
+        i = (i + 1) % SIZE;
+        position++;
+    }
+
+    return -1; // index not found in queue
 }
