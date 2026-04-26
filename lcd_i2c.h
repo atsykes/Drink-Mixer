@@ -13,12 +13,4 @@ void lcd_writedata(unsigned char data);
 void lcd_moveto(unsigned char row, unsigned char col);
 void lcd_stringout(char *str);
 
-/* ---------------- Optional (if you want later) ---------------- */
-
-// Clear display
-void lcd_clear(void);
-
-// Return cursor home
-void lcd_home(void);
-
 #endif

@@ -12,4 +12,7 @@ typedef struct
 const char *getName(const Drink *);
 const bool *getIngredients(const Drink *);
 
+void displayMenu(Drink **drinks, int drink, bool *updateDrink);
+extern Drink *drinks[6];
+
 #endif
