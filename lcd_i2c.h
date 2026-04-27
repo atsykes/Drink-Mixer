@@ -12,5 +12,6 @@ void lcd_writedata(unsigned char data);
 
 void lcd_moveto(unsigned char row, unsigned char col);
 void lcd_stringout(char *str);
+void lcd_print_hex(uint8_t v);
 
 #endif

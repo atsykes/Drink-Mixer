@@ -118,3 +118,13 @@ void lcd_stringout(char *str)
         i++;
     }
 }
+
+void lcd_print_hex(uint8_t v)
+{
+    const char hex[] = "0123456789ABCDEF";
+    char buf[3];
+    buf[0] = hex[(v >> 4) & 0x0F];
+    buf[1] = hex[v & 0x0F];
+    buf[2] = '\0';
+    lcd_stringout(buf);
+}
