@@ -10,9 +10,6 @@
 #include "sonar.h"
 #include "queue.h"
 #include "orders.h"
-
-// #include "queue.h" // Circular queue for orders
-
 #include "rfid.h"
 
 // ADC Button Values
@@ -100,7 +97,6 @@ int main(void)
     int cnt = 0;
 
     int found = -1;
-    int old_found = -2;
 
     bool inFront = 0;
 
