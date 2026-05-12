@@ -22,8 +22,8 @@
 #define MINDRINKID 0
 
 #define NUM_PUMPS 4
-#define MAX_DISTANCE 15
-#define DISPENSE_TIME 15625
+#define MAX_DISTANCE 7
+#define DISPENSE_TIME 15625 * 2
 
 // Functions
 void displayOrder(int);
@@ -103,8 +103,29 @@ int main(void)
     bool dispense = 0;
     uint16_t dispenseStartTime;
 
+    // TEST
+    lcd_writecommand(2);
     while (1)
     {
+        // TEST - uncomment displayOrder and displayMenu after
+        lcd_moveto(0, 11);
+        if (state == IDLE)
+            lcd_stringout("I");
+        else if (state == START)
+            lcd_stringout("S");
+        else if (state == DISPENSE)
+            lcd_stringout("D");
+        else if (state == TIMEOUT)
+            lcd_stringout("T");
+        // lcd_moveto(1, 8);
+        // char h;
+        // lcd_stringout(h++);
+
+        lcd_moveto(0, 12);
+        char pointers[16];
+        snprintf(pointers, 16, "%d%d%d%d", pump1, pump2, pump3, pump4);
+        lcd_stringout(pointers);
+
         // RFID Stuff
         status = rc522_request(PICC_REQIDL, tag_type);
         // uart_print("Requesting ID\r\n"); // for debugging
@@ -113,22 +134,30 @@ int main(void)
             status = rc522_anticoll(uid);
             if (status == MI_OK)
             {
+                // // TEST
+                // lcd_moveto(0, 2);
+                // for (int i = 0; i < 4; i++)
+                // {
+                //     lcd_print_hex(uid[i]);
+                // }
                 // Queue Functionality
                 found = findRFID(uid);
                 if (found == -1) // Meaning this cup is not already in the queue
                     enqueue(uid, drinks[drink]);
                 else
                 {
-                    if (!equal_uid(uid, old_uid))
-                    {
-                        displayOrder(found);
-                        set_uid(uid, old_uid);
-                        displayingOrder = true;
-                    }
+                    displayOrder(found);
+                    displayingOrder = true;
+                    // if (!equal_uid(uid, old_uid))
+                    // {
+                    //     displayOrder(found);
+                    //     set_uid(uid, old_uid);
+                    //     displayingOrder = true;
+                    // }
                 }
             }
         }
-        if (displayingOrder && displayCnt % 100 == 0)
+        if (displayingOrder && displayCnt % 10 == 0)
         {
             displayingOrder = false;
             displayCnt = 1;
@@ -176,18 +205,25 @@ int main(void)
         }
         else if (state == DISPENSE)
         {
-            updateBelt(0);
             if (!dispense)
             {
+                updateBelt(0);
+                _delay_ms(50);
                 dispense = true;
                 dispenseStartTime = TCNT3;
+                callSensors(pump_en);
                 startDispense(pump_en, &pump1, &pump2, &pump3, &pump4);
             }
             else if (dispense && (uint16_t)(TCNT3 - dispenseStartTime) >= DISPENSE_TIME)
             {
                 dispense = false;
                 endDispense(pump_en);
+                rc522_init();
             }
+        }
+        else if (state == TIMEOUT)
+        {
+            updateBelt(1);
         }
 
         // Sonar Sensors
@@ -287,7 +323,6 @@ void set_uid(uint8_t uid[5], uint8_t old_uid[5])
 bool callSensors(bool *pump_en)
 {
     int cnt = 0;
-    bool inFront = 0;
     for (int i = 0; i < NUM_SENSORS; i++)
     {
         pollSensors(i);
@@ -299,16 +334,22 @@ bool callSensors(bool *pump_en)
 
         if (sensors[i].pulse_done)
         {
-            uint16_t p;
-            p = sensors[i].pulse;
+            uint16_t p = sensors[i].pulse;
             sensors[i].pulse_done = false;
 
             uint16_t distance = p / 58;
-            // display distance for sensor i
             if (distance < MAX_DISTANCE)
                 pump_en[i] = true;
             else
+            {
+                pump_en[i] = false;
                 ++cnt;
+            }
+        }
+        else // timeout
+        {
+            pump_en[i] = false;
+            ++cnt;
         }
     }
     if (cnt == NUM_SENSORS)
@@ -321,26 +362,38 @@ void startDispense(bool *pump_en, int *pump1, int *pump2, int *pump3, int *pump4
     if (pump_en[0])
     {
         if (queue[*pump1]->drink->ingredients[0])
+        {
             PORTA |= (1 << PA4);
-        (*pump1)++;
+            updateBelt(0);
+        }
+        *pump1 = ((*pump1) + 1) % SIZE;
     }
     if (pump_en[1])
     {
         if (queue[*pump2]->drink->ingredients[1])
+        {
             PORTA |= (1 << PA5);
-        (*pump2)++;
+            updateBelt(0);
+        }
+        *pump2 = ((*pump2) + 1) % SIZE;
     }
     if (pump_en[2])
     {
         if (queue[*pump3]->drink->ingredients[2])
+        {
             PORTA |= (1 << PA6);
-        (*pump3)++;
+            updateBelt(0);
+        }
+        *pump3 = ((*pump3) + 1) % SIZE;
     }
     if (pump_en[3])
     {
         if (queue[*pump4]->drink->ingredients[3])
+        {
             PORTA |= (1 << PA7);
-        (*pump4)++;
+            updateBelt(0);
+        }
+        *pump4 = ((*pump4) + 1) % SIZE;
         dequeue();
     }
 }

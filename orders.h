@@ -7,11 +7,11 @@
 typedef struct
 {
     uint8_t uid[5];
-    Drink *drink;
+    const Drink *drink;
 } Order;
 
 const uint8_t *getID(const Order *o);
 const Drink *getDrink(const Order *o);
-void updateOrder(Order *order, uint8_t *uid, Drink *drink);
+void updateOrder(Order *order, const uint8_t *uid, const Drink *drink);
 
 #endif

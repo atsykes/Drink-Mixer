@@ -20,11 +20,11 @@ int isEmpty()
     return front == -1;
 }
 
-Order *getFront(void)
+int getFront(void)
 {
     if (isEmpty())
-        return NULL; // or some error value
-    return queue[front];
+        return -1;
+    return front; // return the index, not the pointer
 }
 
 Order *getRear(void)

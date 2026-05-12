@@ -21,20 +21,20 @@ int main(void)
         if (cnt % 12 == 0)
         {
             cnt = 0;
-            for (int i = 0; i < NUM_SENSORS; i++)
+            for (int i = 0; i < 2; i++)
             {
-                pollSensors(i);
+                pollSensors(i + 1);
 
                 // Wait for pulse_done with timeout
                 uint16_t start = TCNT1;
-                while (!sensors[i].pulse_done && (uint16_t)(TCNT1 - start) < 870)
+                while (!sensors[i + 1].pulse_done && (uint16_t)(TCNT1 - start) < 870)
                     ;
 
-                if (sensors[i].pulse_done)
+                if (sensors[i + 1].pulse_done)
                 {
                     uint16_t p;
-                    p = sensors[i].pulse;
-                    sensors[i].pulse_done = false;
+                    p = sensors[i + 1].pulse;
+                    sensors[i + 1].pulse_done = false;
 
                     uint16_t distance = p / 58;
                     // display distance for sensor i

@@ -6,7 +6,7 @@
 
 int isFull();
 int isEmpty();
-Order *getFront(void);
+int getFront(void);
 Order *getRear(void);
 int enqueue(const uint8_t *, const Drink *);
 int dequeue();

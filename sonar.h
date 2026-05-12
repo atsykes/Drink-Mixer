@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define NUM_SENSORS 2
+#define NUM_SENSORS 4
 
 typedef struct
 {

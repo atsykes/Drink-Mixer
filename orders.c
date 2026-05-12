@@ -15,7 +15,7 @@ const Drink *getDrink(const Order *o)
     return o->drink;
 }
 
-void updateOrder(Order *order, uint8_t *uid, Drink *drink)
+void updateOrder(Order *order, const uint8_t *uid, const Drink *drink)
 {
     /**
      * @brief Update the order variable with the new uid and drink for the queue
