@@ -52,7 +52,7 @@ int main(void)
 
     bool updateDrink = true;
 
-    // RFID reader init ----------------------
+    // RFID reader init
     uint8_t status;
     uint8_t tag_type[2];
     uint8_t uid[5];
@@ -61,7 +61,7 @@ int main(void)
     hardware_init();
     rc522_init();
 
-    // Pumps init ----------------------------
+    // Pumps init
     int state = IDLE;
 
     // These store the index to the orders queue
@@ -103,11 +103,9 @@ int main(void)
     bool dispense = 0;
     uint16_t dispenseStartTime;
 
-    // TEST
-    lcd_writecommand(2);
     while (1)
     {
-        // TEST - uncomment displayOrder and displayMenu after
+        // Debugging purposes
         lcd_moveto(0, 11);
         if (state == IDLE)
             lcd_stringout("I");
@@ -117,9 +115,6 @@ int main(void)
             lcd_stringout("D");
         else if (state == TIMEOUT)
             lcd_stringout("T");
-        // lcd_moveto(1, 8);
-        // char h;
-        // lcd_stringout(h++);
 
         lcd_moveto(0, 12);
         char pointers[16];
@@ -128,18 +123,11 @@ int main(void)
 
         // RFID Stuff
         status = rc522_request(PICC_REQIDL, tag_type);
-        // uart_print("Requesting ID\r\n"); // for debugging
         if (status == MI_OK)
         {
             status = rc522_anticoll(uid);
             if (status == MI_OK)
             {
-                // // TEST
-                // lcd_moveto(0, 2);
-                // for (int i = 0; i < 4; i++)
-                // {
-                //     lcd_print_hex(uid[i]);
-                // }
                 // Queue Functionality
                 found = findRFID(uid);
                 if (found == -1) // Meaning this cup is not already in the queue
@@ -207,7 +195,6 @@ int main(void)
         {
             if (!dispense)
             {
-                updateBelt(0);
                 _delay_ms(50);
                 dispense = true;
                 dispenseStartTime = TCNT3;

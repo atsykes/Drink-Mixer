@@ -1,9 +1,9 @@
+// Source: Adapted from USC EE109 - Intro to Embedded Systems
+
 #ifndef LCD_H
 #define LCD_H
 
 #include <stdint.h>
-
-/* ---------------- LCD API ---------------- */
 
 void lcd_init(void);
 

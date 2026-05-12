@@ -3,15 +3,15 @@
 #include <avr/interrupt.h>
 #include "lcd_i2c.h"
 
-#define LCD_ADDR 0x27 // change to 0x3F if needed
+#define LCD_ADDR 0x27
 
-// PCF8574 bit mapping
+// Bit mapping
 #define LCD_RS 0x01
 #define LCD_RW 0x02
 #define LCD_EN 0x04
 #define LCD_BL 0x08
 
-// ---------------- I2C ----------------
+// I2C
 
 void i2c_init(void)
 {
@@ -39,8 +39,7 @@ void i2c_stop(void)
     TWCR = (1 << TWINT) | (1 << TWSTO) | (1 << TWEN);
 }
 
-// ---------------- LCD LOW LEVEL ----------------
-
+// Low Level
 void lcd_write_i2c(uint8_t data)
 {
     i2c_start();
@@ -67,8 +66,7 @@ void lcd_writenibble(uint8_t nibble, uint8_t rs)
     lcd_pulse_enable(data);
 }
 
-// ---------------- LCD API ----------------
-
+// High Level
 void lcd_writecommand(unsigned char cmd)
 {
     lcd_writenibble(cmd, 0);

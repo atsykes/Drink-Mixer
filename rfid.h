@@ -1,12 +1,5 @@
-// /* ------------------------------------------------------------
-//  * RC522 wiring for ATmega328P hardware SPI
-//  * ------------------------------------------------------------
-//  * MOSI -> PB3 (Arduino D11)
-//  * MISO -> PB4 (Arduino D12)
-//  * SCK  -> PB5 (Arduino D13)
-//  * SS/CS -> PB2 (Arduino D10)
-//  * RST  -> PD2 (can be changed)
-//  */
+// Source: https://urldefense.com/v3/__https://github.com/knksmith57/eecs373-actel-mfrc522-spi/tree/master__;!!LIr3w8kk_Xxm!v0GomGCc9tzQMqcd8aYF9au_4ko6auLMqNq2qnjhOFr-eQI3NG43eqF0zqqisLPTHMVTrScs1vAWOqg$
+
 #include <avr/io.h>
 #include <util/delay.h>
 #include <stdint.h>
@@ -14,16 +7,13 @@
 
 #define RC522_CS_DDR DDRB
 #define RC522_CS_PORT PORTB
-// #define RC522_CS_PIN   PB2
 #define RC522_CS_PIN PB4
 
 #define RC522_RST_DDR DDRD
 #define RC522_RST_PORT PORTD
 #define RC522_RST_PIN PD2
 
-/* ------------------------------------------------------------
- * RC522 registers
- * ------------------------------------------------------------ */
+// RC522 registers
 #define RC522_COMMAND_REG 0x01
 #define RC522_COM_IEN_REG 0x02
 #define RC522_DIV_IEN_REG 0x03
@@ -62,15 +52,6 @@
 #define MI_NOTAGERR 1
 #define MI_ERR 2
 
-#define F_CPU 1000000UL
-#define BAUD 4800 // <-- IMPORTANT change for reliability
-// #define BAUD 9600UL
-#define UBRR_VALUE ((F_CPU / (16UL * BAUD)) - 1)
-
-void uart_init(void);
-void uart_tx(char c);
-void uart_print(const char *s);
-void uart_print_hex8(uint8_t v);
 void spi_init(void);
 uint8_t spi_transfer(uint8_t data);
 static inline void cs_low(void);
@@ -91,70 +72,4 @@ uint8_t rc522_to_card(uint8_t command,
                       uint16_t *back_len);
 uint8_t rc522_request(uint8_t req_mode, uint8_t *tag_type);
 uint8_t rc522_anticoll(uint8_t *ser_num);
-void print_uid(const uint8_t *uid, uint8_t len);
 void hardware_init(void);
-
-// -----------------------------------------------------------------------
-// #ifndef RFID_H
-// #define RFID_H
-
-// #include <avr/io.h>
-// #include <stdint.h>
-
-// /* ------------------------------------------------------------
-//  * RC522 wiring for ATmega1284P hardware SPI
-//  * ------------------------------------------------------------
-//  * MOSI -> PB5
-//  * MISO -> PB6
-//  * SCK  -> PB7
-//  * SS   -> PB4 (must be output for master mode)
-//  *
-//  * You can choose any pin for CS (here PB2)
-//  * RST -> PD2
-//  * ------------------------------------------------------------ */
-
-// #define RC522_CS_DDR   DDRB
-// #define RC522_CS_PORT  PORTB
-// #define RC522_CS_PIN   PB2
-
-// #define RC522_RST_DDR  DDRD
-// #define RC522_RST_PORT PORTD
-// #define RC522_RST_PIN  PD2
-
-// /* MFRC522 Registers */
-// #define CommandReg     0x01
-// #define ComIEnReg      0x02
-// #define DivIEnReg      0x03
-// #define ComIrqReg      0x04
-// #define DivIrqReg      0x05
-// #define ErrorReg       0x06
-// #define Status1Reg     0x07
-// #define Status2Reg     0x08
-// #define FIFODataReg    0x09
-// #define FIFOLevelReg   0x0A
-// #define ControlReg     0x0C
-// #define BitFramingReg  0x0D
-// #define ModeReg        0x11
-// #define TxControlReg   0x14
-// #define TxASKReg       0x15
-// #define TModeReg       0x2A
-// #define TPrescalerReg  0x2B
-// #define TReloadRegH    0x2C
-// #define TReloadRegL    0x2D
-// #define PICC_REQIDL    0x26
-// #define PICC_ANTICOLL  0x93
-
-// /* Commands */
-// #define PCD_Idle       0x00
-// #define PCD_Transceive 0x0C
-// #define PCD_SoftReset  0x0F
-
-// void spi_init(void);
-// uint8_t spi_transfer(uint8_t data);
-
-// void rc522_init(void);
-// void rc522_reset(void);
-// void rc522_write(uint8_t reg, uint8_t val);
-// uint8_t rc522_read(uint8_t reg);
-
-// #endif

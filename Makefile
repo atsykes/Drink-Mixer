@@ -2,12 +2,11 @@ DEVICE     = atmega1284p
 CLOCK      = 8000000
 PROGRAMMER = -c usbasp -P usb -B 10
 OBJECTS    = main.o lcd_i2c.o adc.o drink.o sonar.o queue.o orders.o rfid.o
-# main.o lcd_i2c.o adc.o drink.o sonar.o queue.o orders.o rfid.o
-# drink.o lcd_i2c.o adc.o test/menu_display_test.o
-# lcd_i2c.o drink.o adc.o queue.o
-# test/lcd_test.o lcd.o adc.o
-# test/sonar_sensor_test.o lcd_i2c.o adc.o sonar.o
-# main_lcd_rfid.o lcd_i2c.o rfid.o
+# MAIN PROG: main.o lcd_i2c.o adc.o drink.o sonar.o queue.o orders.o rfid.o
+# MENU TEST: drink.o lcd_i2c.o adc.o test/menu_display_test.o
+# ADC TEST: lcd_i2c.o drink.o adc.o queue.o
+# SONAR TEST: test/sonar_sensor_test.o lcd_i2c.o adc.o sonar.o
+# RFID TEST: main_lcd_rfid.o lcd_i2c.o rfid.o
 FUSES      = -U hfuse:w:0xd9:m -U lfuse:w:0xe2:m -U efuse:w:0xff:m
 
 # Tune the lines below only if you know what you are doing:
